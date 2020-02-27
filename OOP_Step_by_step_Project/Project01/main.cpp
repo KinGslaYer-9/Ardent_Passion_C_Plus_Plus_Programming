@@ -1,4 +1,8 @@
 #include <iostream>
+
+#define TRUE		1
+#define FALSE		0
+
 using namespace std;
 
 void ShowMenu(void);
@@ -9,7 +13,7 @@ void ShowAllAccount(void);
 
 typedef struct account
 {
-	int accountNum;
+	int accountID;
 	char name[20];
 	unsigned int currentMoney;
 } Account;
@@ -48,7 +52,9 @@ int main(void)
 			ShowAllAccount();
 			break;
 		case EXIT:
-			break;
+			return 0;
+		default:
+			cout << "잘못된 메뉴를 선택하셨습니다" << endl << endl;
 		}
 	}
 
@@ -69,7 +75,7 @@ void CreateAccount(void)
 {
 	cout << "[계좌개설]" << endl;
 	cout << "계좌ID: ";
-	cin >> accArr[accCount].accountNum;
+	cin >> accArr[accCount].accountID;
 	cout << "이름: ";
 	cin >> accArr[accCount].name;
 	cout << "입금액: ";
@@ -80,47 +86,71 @@ void CreateAccount(void)
 
 void DepositMoney(void)
 {
-	int accountNum, depositMoney;
+	int isFind = FALSE;
+	int accountID, depositMoney, idx;
 
 	cout << "[입    금]" << endl;
 	cout << "계좌ID: ";
-	cin >> accountNum;
+	cin >> accountID;
 
+	cout << "계좌ID를 확인 중 입니다..." << endl;
 	for (int i = 0; i < accCount; i++)
 	{
-		if (accountNum == accArr[i].accountNum)
+		if (accountID == accArr[i].accountID)
 		{
-			cout << "입금액: ";
-			cin >> depositMoney;
-
-			accArr[i].currentMoney += depositMoney;
-
-			cout << "입금완료" << endl << endl;
+			isFind = TRUE;
+			idx = i;
 			break;
 		}
+	}
+
+	if (isFind)
+	{
+		cout << "입금액: ";
+		cin >> depositMoney;
+
+		accArr[idx].currentMoney += depositMoney;
+
+		cout << "입금완료" << endl << endl;
+	}
+	else
+	{
+		cout << "ID가 존재하지 않습니다." << endl << endl;
 	}
 }
 
 void WithdrawMoney(void)
 {
-	int accountNum, withdrawMoney;
+	int isFind = FALSE;
+	int accountID, withdrawMoney, idx;
 
 	cout << "[출    금]" << endl;
 	cout << "계좌ID: ";
-	cin >> accountNum;
+	cin >> accountID;
 
+	cout << "계좌ID를 확인 중 입니다..." << endl;
 	for (int i = 0; i < accCount; i++)
 	{
-		if (accountNum == accArr[i].accountNum)
+		if (accountID == accArr[i].accountID)
 		{
-			cout << "출금액: ";
-			cin >> withdrawMoney;
-
-			accArr[i].currentMoney -= withdrawMoney;
-
-			cout << "출금완료" << endl << endl;
+			isFind = TRUE;
+			idx = i;
 			break;
 		}
+	}
+
+	if (isFind)
+	{
+		cout << "출금액: ";
+		cin >> withdrawMoney;
+
+		accArr[idx].currentMoney -= withdrawMoney;
+
+		cout << "출금완료" << endl << endl;
+	}
+	else
+	{
+		cout << "ID가 존재하지 않습니다." << endl << endl;
 	}
 }
 
@@ -128,7 +158,7 @@ void ShowAllAccount(void)
 {
 	for (int i = 0; i < accCount; i++)
 	{
-		cout << "계좌ID: " << accArr[i].accountNum << endl;
+		cout << "계좌ID: " << accArr[i].accountID << endl;
 		cout << "이름: " << accArr[i].name << endl;
 		cout << "잔액: " << accArr[i].currentMoney << endl << endl;
 	}

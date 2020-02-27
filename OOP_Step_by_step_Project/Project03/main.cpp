@@ -23,9 +23,6 @@ namespace BANK_CONTROL_CONST
 	};
 }
 
-Account* accArr[100];
-int accCount = 0;
-
 class Account
 {
 private:
@@ -46,6 +43,9 @@ public:
 
 	void ShowAccInfo() const;
 };
+
+Account* accArr[100];
+int accCount = 0;
 
 Account::Account(int accountID, char* name, int depositMoney)
 	: _accountID(accountID), currentMoney(depositMoney)
@@ -127,7 +127,7 @@ int main(void)
 			ShowAllAccount();
 			break;
 		case BANK_CONTROL_CONST::EXIT:
-			break;
+			return 0;
 		default:
 			cout << "잘못된 메뉴를 선택하셨습니다" << endl << endl;
 		}
@@ -168,55 +168,71 @@ void CreateAccount(void)
 
 void DepositMoney(void)
 {
-	int accountID, depositMoney;
+	bool isFind = false;
+	int accountID, depositMoney, idx;
 
 	cout << "[입    금]" << endl;
 	cout << "계좌ID: ";
 	cin >> accountID;
 
+	cout << "계좌ID를 확인 중 입니다..." << endl;
 	for (int i = 0; i < accCount; i++)
 	{
 		if (accountID == accArr[i]->GetAccountID())
 		{
-			cout << "입금액: ";
-			cin >> depositMoney;
-
-			accArr[i]->Deposit(depositMoney);
-
-			cout << "입금완료" << endl << endl;
+			isFind = true;
+			idx = i;
 			break;
 		}
-		else
-		{
-			cout << "ID가 존재하지 않습니다." << endl << endl;
-		}
+	}
+
+	if (isFind)
+	{
+		cout << "입금액: ";
+		cin >> depositMoney;
+
+		accArr[idx]->Deposit(depositMoney);
+
+		cout << "입금완료" << endl << endl;
+	}
+	else
+	{
+		cout << "ID가 존재하지 않습니다." << endl << endl;
 	}
 }
 
 void WithdrawMoney(void)
 {
-	int accountID, withdrawMoney;
+	bool isFind = false;
+	int accountID, withdrawMoney, idx;
 
 	cout << "[출    금]" << endl;
 	cout << "계좌ID: ";
 	cin >> accountID;
 
+	cout << "계좌ID를 확인 중 입니다..." << endl;
 	for (int i = 0; i < accCount; i++)
 	{
 		if (accountID == accArr[i]->GetAccountID())
 		{
-			cout << "출금액: ";
-			cin >> withdrawMoney;
-
-			accArr[i]->Withdraw(withdrawMoney);
-
-			cout << "출금완료" << endl << endl;
+			isFind = true;
+			idx = i;
 			break;
 		}
-		else
-		{
-			cout << "ID가 존재하지 않습니다." << endl << endl;
-		}
+	}
+
+	if (isFind)
+	{
+		cout << "출금액: ";
+		cin >> withdrawMoney;
+
+		accArr[idx]->Withdraw(withdrawMoney);
+
+		cout << "출금완료" << endl << endl;
+	}
+	else
+	{
+		cout << "ID가 존재하지 않습니다." << endl << endl;
 	}
 }
 
