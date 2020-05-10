@@ -1,9 +1,8 @@
 #include <iostream>
+using namespace std;
 
 #define TRUE		1
 #define FALSE		0
-
-using namespace std;
 
 void ShowMenu(void);
 void CreateAccount(void);
@@ -112,14 +111,13 @@ void DepositMoney(void)
 		accArr[idx].currentMoney += depositMoney;
 
 		cout << "입금완료" << endl << endl;
+		return;
 	}
-	else
-	{
-		cout << "ID가 존재하지 않습니다." << endl << endl;
-	}
+
+	cout << "ID가 존재하지 않습니다." << endl << endl;
 }
 
-void WithdrawMoney(void)
+int WithdrawMoney(void)
 {
 	int isFind = FALSE;
 	int accountID, withdrawMoney, idx;
@@ -144,14 +142,19 @@ void WithdrawMoney(void)
 		cout << "출금액: ";
 		cin >> withdrawMoney;
 
+		if (accArr[idx].currentMoney < 0)
+		{
+			cout << "잔액이 부족합니다. 출금처리를 종료합니다." << endl;
+			return;
+		}
+
 		accArr[idx].currentMoney -= withdrawMoney;
 
 		cout << "출금완료" << endl << endl;
+		return;
 	}
-	else
-	{
-		cout << "ID가 존재하지 않습니다." << endl << endl;
-	}
+
+	cout << "ID가 존재하지 않습니다." << endl << endl;
 }
 
 void ShowAllAccount(void)

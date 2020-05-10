@@ -1,9 +1,8 @@
 #include <iostream>
 #include <cstring>
+using namespace std;
 
 #define NAME_LEN		20
-
-using namespace std;
 
 void ShowMenu(void);			// 메뉴 출력
 void CreateAccount(void);		// 계좌 생성
@@ -38,7 +37,7 @@ public:
 	int GetCurrentMoney() const;
 
 	void Deposit(int money);
-	void Withdraw(int money);
+	int Withdraw(int money);
 
 	void ShowAccInfo() const;
 };
@@ -78,12 +77,13 @@ void Account::Deposit(int money)
 	currentMoney += money;
 }
 
-void Account::Withdraw(int money)
+int Account::Withdraw(int money)
 {
 	if (currentMoney < 0 || currentMoney < money)
 		return;
 
 	currentMoney -= money;
+	return money;
 }
 
 void Account::ShowAccInfo() const
@@ -158,7 +158,7 @@ void CreateAccount(void)
 	accArr[accCount++] = new Account(id, name, depositMoney);
 }
 
-void DepositMoney(void)
+void DepositMoney()
 {
 	bool isFind = false;
 	int accountID, depositMoney, idx;
@@ -186,14 +186,13 @@ void DepositMoney(void)
 		accArr[idx]->Deposit(depositMoney);
 
 		cout << "입금완료" << endl << endl;
+		return;
 	}
-	else
-	{
-		cout << "ID가 존재하지 않습니다." << endl << endl;
-	}
+
+	cout << "ID가 존재하지 않습니다." << endl << endl;
 }
 
-void WithdrawMoney(void)
+void WithdrawMoney()
 {
 	bool isFind = false;
 	int accountID, withdrawMoney, idx;
@@ -218,14 +217,17 @@ void WithdrawMoney(void)
 		cout << "출금액: ";
 		cin >> withdrawMoney;
 
-		accArr[idx]->Withdraw(withdrawMoney);
+		if (accArr[idx]->Withdraw(withdrawMoney) < 0)
+		{
+			cout << "잔액이 부족합니다. 출금처리를 종료합니다." << endl;
+			return;
+		}
 
 		cout << "출금완료" << endl << endl;
+		return;
 	}
-	else
-	{
-		cout << "ID가 존재하지 않습니다." << endl << endl;
-	}
+
+	cout << "ID가 존재하지 않습니다." << endl << endl;
 }
 
 void ShowAllAccount(void)
