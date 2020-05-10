@@ -1,0 +1,200 @@
+#include "BankingCommonDecl.h"
+#include "AccountHandler.h"
+#include "NormalAccount.h"
+#include "HighCreditAccount.h"
+
+void AccountHandler::ShowMenu() const
+{
+	cout << "----Menu------" << endl;
+	cout << "1. 계좌개설" << endl;
+	cout << "2. 입 금" << endl;
+	cout << "3. 출 금" << endl;
+	cout << "4. 계좌정보 전체 출력" << endl;
+	cout << "5. 프로그램 종료" << endl;
+}
+
+void AccountHandler::CreateAccount()
+{
+	int choice;
+
+	while (true)
+	{
+		choice = ChoiceCreateAccount();
+
+		switch (choice)
+		{
+		case ACCOUNT_TYPE::NORMAL:
+			CreateNormalAccount();
+			return;
+		case ACCOUNT_TYPE::HIGHCREDIT:
+			CreateHighCreditAccount();
+			return;
+		default:
+			cout << "잘못된 메뉴를 선택하셨습니다. 다시 선택하세요" << endl << endl;
+		}
+	}
+}
+
+int AccountHandler::ChoiceCreateAccount()
+{
+	int choice;
+
+	cout << "[계좌종류선택]" << endl;
+	cout << "1 .보통예금계좌 2 .신용신뢰계좌" << endl;
+	cout << "선택: ";
+	cin >> choice;
+
+	return choice;
+}
+
+void AccountHandler::CreateNormalAccount()
+{
+	char name[NAME_LEN];
+	int accountID, depositMoney, interestRate;
+
+	cout << "[보통예금계좌 개설]" << endl;
+	cout << "계좌ID: ";
+	cin >> accountID;
+
+	cout << "이  름: ";
+	cin >> name;
+
+	cout << "입금액: ";
+	cin >> depositMoney;
+
+	cout << "이자율: ";
+	cin >> interestRate;
+
+	cout << endl;
+
+	accArr[accCount++] = new NormalAccount(accountID, name, depositMoney, interestRate);
+}
+
+void AccountHandler::CreateHighCreditAccount()
+{
+	char name[NAME_LEN];
+	int accountID, depositMoney, interestRate, creditRating;
+
+	cout << "[신용신뢰계좌 개설]" << endl;
+	cout << "계좌ID: ";
+	cin >> accountID;
+
+	cout << "이  름: ";
+	cin >> name;
+
+	cout << "입금액: ";
+	cin >> depositMoney;
+
+	cout << "이자율: ";
+	cin >> interestRate;
+
+	while (true)
+	{
+		cout << "신용등급(1toA, 2toB, 3toC): ";
+		cin >> creditRating;
+
+		switch (creditRating)
+		{
+		case 1:
+			accArr[accCount++] = new HighCreditAccount(accountID, name, depositMoney, interestRate, CREDIT_RATING_INTEREST::RATING_A);
+			return;
+		case 2:
+			accArr[accCount++] = new HighCreditAccount(accountID, name, depositMoney, interestRate, CREDIT_RATING_INTEREST::RATING_B);
+			return;
+		case 3:
+			accArr[accCount++] = new HighCreditAccount(accountID, name, depositMoney, interestRate, CREDIT_RATING_INTEREST::RATING_C);
+			return;
+		default:
+			cout << "범위에 없는 등급을 입력하셨습니다. 다시 입력하세요!" << endl;
+			break;
+		}
+	}
+
+	cout << endl;
+}
+
+void AccountHandler::DepositMoney()
+{
+	bool isFind = false;
+	int accountID, depositMoney, idx;
+
+	cout << "[입    금]" << endl;
+	cout << "계좌ID: ";
+	cin >> accountID;
+
+	cout << "계좌ID를 확인 중 입니다..." << endl;
+	for (int i = 0; i < accCount; i++)
+	{
+		if (accountID == accArr[i]->GetAccountID())
+		{
+			isFind = true;
+			idx = i;
+			break;
+		}
+	}
+
+	if (isFind)
+	{
+		cout << "입금액: ";
+		cin >> depositMoney;
+
+		accArr[idx]->Deposit(depositMoney);
+
+		cout << "입금완료" << endl << endl;
+		return;
+	}
+
+	cout << "ID가 존재하지 않습니다." << endl << endl;
+}
+
+void AccountHandler::WithdrawMoney()
+{
+	bool isFind = false;
+	int accountID, withdrawMoney, idx;
+
+	cout << "[출    금]" << endl;
+	cout << "계좌ID: ";
+	cin >> accountID;
+
+	cout << "계좌ID를 확인 중 입니다..." << endl;
+	for (int i = 0; i < accCount; i++)
+	{
+		if (accountID == accArr[i]->GetAccountID())
+		{
+			isFind = true;
+			idx = i;
+			break;
+		}
+	}
+
+	if (isFind)
+	{
+		cout << "출금액: ";
+		cin >> withdrawMoney;
+
+		if (accArr[idx]->Withdraw(withdrawMoney) < 0)
+		{
+			cout << "잔액이 부족합니다. 출금처리를 종료합니다." << endl;
+			return;
+		}
+
+		cout << "출금완료" << endl << endl;
+		return;
+	}
+
+	cout << "ID가 존재하지 않습니다." << endl << endl;
+}
+
+void AccountHandler::ShowAllAccount() const
+{
+	for (int i = 0; i < accCount; i++)
+	{
+		accArr[i]->ShowAccInfo();
+		cout << endl;
+	}
+}
+
+AccountHandler::~AccountHandler()
+{
+	delete[] accArr;
+}

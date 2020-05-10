@@ -98,8 +98,8 @@ void Account::Deposit(int money)
 
 int Account::Withdraw(int money)
 {
-	if (currentMoney < 0 || currentMoney < money)
-		return;
+	if (currentMoney < 0)
+		return 0;
 
 	currentMoney -= money;
 	return money;
@@ -119,7 +119,7 @@ class NormalAccount : public Account
 private:
 	int interestRate;
 public:
-	NormalAccount(int accountID, const char* name, int depositMoney, double baseInterestRate)
+	NormalAccount(int accountID, const char* name, int depositMoney, int baseInterestRate)
 		: Account(accountID, name, depositMoney), interestRate(baseInterestRate)
 	{ }
 	virtual void Deposit(int money);
@@ -138,7 +138,7 @@ class HighCreditAccount : public NormalAccount
 private:
 	int creditRating;
 public:
-	HighCreditAccount(int accountID, const char* name, int depositMoney, double baseInterestRate, int credit)
+	HighCreditAccount(int accountID, const char* name, int depositMoney, int baseInterestRate, int credit)
 		: NormalAccount(accountID, name, depositMoney, baseInterestRate), creditRating(credit)
 	{ }
 	virtual void Deposit(int money);
